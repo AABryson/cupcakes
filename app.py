@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, render_template
 
 from models import db, connect_db, Cupcake
 from flask_migrate import Migrate
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
 app.app_context().push()
@@ -11,8 +11,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///cupcakes'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = "verySecret"
+app.config["CORS_SUPPORTS_CREDENTIALS"]=True 
+CORS(app, resources={r"/api/*": {"origins": "*", "methods": ["GET", "POST", "PATCH", "DELETE"]}})
 
-CORS(app)
 connect_db(app)
 
 @app.route('/')
@@ -49,7 +50,7 @@ def add_cupcake():
         flavor = req['flavor'],
         size = req['size'],
         rating = req['rating'],
-        img = req['img']
+        image = req['image']
         )
     db.session.add(cupcake)
     db.session.commit()
@@ -63,7 +64,7 @@ def update_cupcake(id):
     cupcake.flavor = req['flavor']
     cupcake.size = req['size']
     cupcake.rating = req['rating']
-    cupcake.img = req['img']
+    cupcake.image = req['image']
     db.session.add(cupcake)
     db.session.commit()
     return jsonify(cupcake=cupcake.to_dict())
@@ -75,6 +76,6 @@ def delete_cupcake(id):
     cupcake = Cupcake.query.get(id)
     #
     db.session.delete(cupcake)
-    db.session.commmit()
+    db.session.commit()
     #
     return jsonify(message = 'Deleted')

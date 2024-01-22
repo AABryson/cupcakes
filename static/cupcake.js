@@ -23,12 +23,12 @@ $('button').on('click', async function(event){
     let flavor = $('#flavor').val();
     let size = $('#size').val();
     let rating = $('#rating').val();
-    let img = $('#IMG').val();
+    let image = $('#Image').val();
     const newCupcakeResponse = await axios.post(`${urlBase}/cupcakes`, {
         flavor,
         rating,
         size,
-        img
+        image
       });
     
       let newCupcake = cupcakeHTML(newCupcakeResponse.data.cupcake);
